@@ -69,9 +69,9 @@ class MainActivity : AppCompatActivity() {
         if (cursor.moveToFirst()) {
 
             // indexからIDを取得し、そのIDから画像のURIを取得する
-            val fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-            val id = cursor.getLong(fieldIndex)
-            val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+            var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+            var id = cursor.getLong(fieldIndex)
+            var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
 
             Log.d("ANDROID", "URI : " + imageUri.toString())
 
@@ -94,17 +94,19 @@ class MainActivity : AppCompatActivity() {
 //        タイマーの始動
                     mTimer!!.schedule(object : TimerTask() {
                         override fun run() {
-                            while (mTimerSec <= 2) {
+                            if (mTimerSec < 2) {
                                 mTimerSec += 0.1
                                 mHandler.post {
 
                                 }
+                            } else {
+                                mTimerSec = 0.0
+                                cursor.moveToNext()
+
                             }
-                            mTimerSec = 0.0
-                            cursor.moveToNext()
-
-                            run()
-
+                            stop_button.setOnClickListener {
+                               stop_button.text = "再生"
+                            }
 
                             }
                     }, 100, 100) //最初に始動させるまでの100ミリ秒、ループの感覚を100ミリ秒
@@ -112,7 +114,7 @@ class MainActivity : AppCompatActivity() {
             }
             imageView.setImageURI(imageUri)
         }
-        cursor.close()
+
 
 
 
