@@ -74,49 +74,82 @@ class MainActivity : AppCompatActivity() {
             var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
 
             Log.d("ANDROID", "URI : " + imageUri.toString())
+            imageView.setImageURI(imageUri)
 
+//            進むボタンを押して画像が最後なら最初の画像表示
             next_button.setOnClickListener {
-                cursor.moveToNext()
-                imageView.setImageURI(imageUri)
+                if (cursor.moveToNext() == false){
+                    cursor.moveToFirst()
+                }
+                    var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+                    var id = cursor.getLong(fieldIndex)
+                    var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    Log.d("ANDROID", "URI : " + imageUri.toString())
+                    imageView.setImageURI(imageUri)
             }
 
+//                戻るボタンを押して画像が最初なら最後の画像表示
             back_button.setOnClickListener {
-                cursor.moveToPrevious()
-                imageView.setImageURI(imageUri)
+                if (cursor.moveToPrevious() == false ) {
+                    cursor.moveToLast()
+                }
+                    var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+                    var id = cursor.getLong(fieldIndex)
+                    var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    Log.d("ANDROID", "URI : " + imageUri.toString())
+                    imageView.setImageURI(imageUri)
+                }
             }
 
             stop_button.setOnClickListener {
+                next_button.isEnabled = false   //進むボタンの無効化
+                back_button.isEnabled = false   //戻るボタンの無効化
                 if (mTimer == null) {
                     //        タイマーの作成
                     mTimer = Timer()
                     stop_button.text = "停止"
+                    cursor.moveToFirst()
 
 //        タイマーの始動
                     mTimer!!.schedule(object : TimerTask() {
                         override fun run() {
-                            if (mTimerSec < 2) {
+                            while (mTimerSec < 2) {
+                                var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+                                var id = cursor.getLong(fieldIndex)
+                                var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                                Log.d("ANDROID", "URI : " + imageUri.toString())
+                                imageView.setImageURI(imageUri)
                                 mTimerSec += 0.1
                                 mHandler.post {
 
                                 }
-                            } else {
+
                                 mTimerSec = 0.0
                                 cursor.moveToNext()
-
-                            }
+                                    var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+                                    var id = cursor.getLong(fieldIndex)
+                                    var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                                    Log.d("ANDROID", "URI : " + imageUri.toString())
+                                    imageView.setImageURI(imageUri)
+                                }
                             stop_button.setOnClickListener {
-                               stop_button.text = "再生"
+                                stop_button.text = "再生"
+                                next_button.isClickable = true   //進むボタンの有効化
+                                back_button.isClickable = true   //戻るボタンの有効化
                             }
 
                             }
                     }, 100, 100) //最初に始動させるまでの100ミリ秒、ループの感覚を100ミリ秒
                 }
             }
-            imageView.setImageURI(imageUri)
+//            imageView.setImageURI(imageUri)
+
+
         }
 
 
+            }
 
 
-    }
-}
+
+
