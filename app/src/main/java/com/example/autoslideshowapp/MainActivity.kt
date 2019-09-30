@@ -109,29 +109,29 @@ class MainActivity : AppCompatActivity() {
                     mTimer = Timer()
                     stop_button.text = "停止"
                     cursor.moveToFirst()
+                    var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+                    var id = cursor.getLong(fieldIndex)
+                    var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    Log.d("ANDROID", "URI : " + imageUri.toString())
+                    imageView.setImageURI(imageUri)
+
 
 //        タイマーの始動
                     mTimer!!.schedule(object : TimerTask() {
                         override fun run() {
                             while (mTimerSec < 2) {
-                                var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-                                var id = cursor.getLong(fieldIndex)
-                                var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                                Log.d("ANDROID", "URI : " + imageUri.toString())
-                                imageView.setImageURI(imageUri)
                                 mTimerSec += 0.1
-                                mHandler.post {
-
-                                }
-
-                                mTimerSec = 0.0
-                                cursor.moveToNext()
+                                mHandler.post{mTimerSec = 0.0
+                                    cursor.moveToNext()
                                     var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
                                     var id = cursor.getLong(fieldIndex)
                                     var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                                     Log.d("ANDROID", "URI : " + imageUri.toString())
-                                    imageView.setImageURI(imageUri)
-                                }
+                                    imageView.setImageURI(imageUri)}
+
+                            }
+
+
                             stop_button.setOnClickListener {
                                 stop_button.text = "再生"
                                 next_button.isClickable = true   //進むボタンの有効化
