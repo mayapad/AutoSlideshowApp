@@ -119,27 +119,28 @@ class MainActivity : AppCompatActivity() {
 //        タイマーの始動
                     mTimer!!.schedule(object : TimerTask() {
                         override fun run() {
-                            while (mTimerSec < 2) {
-                                mTimerSec += 0.1
-                                mHandler.post{mTimerSec = 0.0
-                                    cursor.moveToNext()
-                                    var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-                                    var id = cursor.getLong(fieldIndex)
-                                    var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                                    Log.d("ANDROID", "URI : " + imageUri.toString())
-                                    imageView.setImageURI(imageUri)}
-
+                            mHandler.post {
+                                //                                    以下、画像を切り替える
+                                cursor.moveToNext()
+                                var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+                                var id = cursor.getLong(fieldIndex)
+                                var imageUri =
+                                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                                Log.d("ANDROID", "URI : " + imageUri.toString())
+                                imageView.setImageURI(imageUri)
                             }
 
 
-                            stop_button.setOnClickListener {
-                                stop_button.text = "再生"
-                                next_button.isClickable = true   //進むボタンの有効化
-                                back_button.isClickable = true   //戻るボタンの有効化
-                            }
+                        }
 
-                            }
-                    }, 100, 100) //最初に始動させるまでの100ミリ秒、ループの感覚を100ミリ秒
+
+                    }, 100, 2000) //最初に始動させるまでの100ミリ秒、ループの間隔を2000ミリ秒
+                }
+                stop_button.setOnClickListener {
+                    stop_button.text = "再生"
+                    next_button.isEnabled = true   //進むボタンの有効化
+                    back_button.isEnabled = true   //戻るボタンの有効化
+                    mTimer!!.cancel()
                 }
             }
 //            imageView.setImageURI(imageUri)
