@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private var mTimerSec = 0.0
 
     private var mHandler = Handler()
+    //    タイマーがストップしているときtrue
+    private var flag = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +56,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun getContentsInfo() {
         // 画像の情報を取得する
         val resolver = contentResolver
@@ -78,32 +79,36 @@ class MainActivity : AppCompatActivity() {
 
 //            進むボタンを押して画像が最後なら最初の画像表示
             next_button.setOnClickListener {
-                if (cursor.moveToNext() == false){
+                if (cursor.moveToNext() == false) {
                     cursor.moveToFirst()
                 }
-                    var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-                    var id = cursor.getLong(fieldIndex)
-                    var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                    Log.d("ANDROID", "URI : " + imageUri.toString())
-                    imageView.setImageURI(imageUri)
+                var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+                var id = cursor.getLong(fieldIndex)
+                var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                Log.d("ANDROID", "URI : " + imageUri.toString())
+                imageView.setImageURI(imageUri)
             }
 
 //                戻るボタンを押して画像が最初なら最後の画像表示
             back_button.setOnClickListener {
-                if (cursor.moveToPrevious() == false ) {
+                if (cursor.moveToPrevious() == false) {
                     cursor.moveToLast()
                 }
-                    var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-                    var id = cursor.getLong(fieldIndex)
-                    var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                    Log.d("ANDROID", "URI : " + imageUri.toString())
-                    imageView.setImageURI(imageUri)
-                }
+                var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+                var id = cursor.getLong(fieldIndex)
+                var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                Log.d("ANDROID", "URI : " + imageUri.toString())
+                imageView.setImageURI(imageUri)
             }
+        }
 
-            stop_button.setOnClickListener {
+        stop_button.setOnClickListener {
+            if (flag) {
+
+
                 next_button.isEnabled = false   //進むボタンの無効化
                 back_button.isEnabled = false   //戻るボタンの無効化
+                flag = false
                 if (mTimer == null) {
                     //        タイマーの作成
                     mTimer = Timer()
@@ -136,12 +141,15 @@ class MainActivity : AppCompatActivity() {
 
                     }, 100, 2000) //最初に始動させるまでの100ミリ秒、ループの間隔を2000ミリ秒
                 }
-                stop_button.setOnClickListener {
+            } else {
+
                     stop_button.text = "再生"
                     next_button.isEnabled = true   //進むボタンの有効化
                     back_button.isEnabled = true   //戻るボタンの有効化
                     mTimer!!.cancel()
-                }
+                    mTimer = null
+                    flag = true
+
             }
 //            imageView.setImageURI(imageUri)
 
@@ -149,7 +157,8 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-            }
+    }
+}
 
 
 
