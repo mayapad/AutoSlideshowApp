@@ -125,7 +125,11 @@ class MainActivity : AppCompatActivity() {
                     mTimer!!.schedule(object : TimerTask() {
                         override fun run() {
                             mHandler.post {
-                                //                                    以下、画像を切り替える
+//                                最後の画像なら最初に戻る
+                                if (cursor.moveToNext() == false) {
+                                    cursor.moveToFirst()
+                                }
+                                //       以下、画像を切り替える
                                 cursor.moveToNext()
                                 var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
                                 var id = cursor.getLong(fieldIndex)
