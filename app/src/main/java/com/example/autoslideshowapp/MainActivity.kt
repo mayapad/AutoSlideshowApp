@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                                     cursor.moveToFirst()
                                 }
                                 //       以下、画像を切り替える
-                                cursor.moveToNext()
+
                                 var fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
                                 var id = cursor.getLong(fieldIndex)
                                 var imageUri =
